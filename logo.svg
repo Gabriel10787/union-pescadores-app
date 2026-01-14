@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#021b2d"/>
+  <path d="M256 120c-50 0-90 30-90 80 0 30 20 55 50 70v40c0 20 15 35 40 35s40-15 40-35v-40c30-15 50-40 50-70 0-50-40-80-90-80z" fill="#44c4a1"/>
+  <ellipse cx="256" cy="360" rx="120" ry="30" fill="#44c4a1" opacity="0.5"/>
+  <text x="256" y="430" font-family="Arial" font-size="48" fill="#fff" text-anchor="middle" font-weight="bold">UPP</text>
+</svg>

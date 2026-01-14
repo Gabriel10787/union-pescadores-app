@@ -126,7 +126,7 @@ function formatearFechaEspanol(fecha) {
 // =====================================================
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
+    navigator.serviceWorker.register('./service-worker.js')
       .then((registration) => {
         console.log('✅ Service Worker registrado correctamente:', registration.scope);
         
@@ -201,6 +201,8 @@ const listaZonasUl = document.getElementById("lista-zonas");
 // Equipos
 const inputNuevoEquipo = document.getElementById("nuevo-equipo");
 const btnAddEquipo = document.getElementById("btn-add-equipo");
+const inputNuevoEquipoModal = document.getElementById("nuevo-equipo-modal");
+const btnAddEquipoModal = document.getElementById("btn-add-equipo-modal");
 const listaEquiposUl = document.getElementById("lista-equipos");
 const tablaEquiposBody = document.querySelector("#tabla-clasificacion-equipos tbody");
 const mensajeSinEquipos = document.getElementById("mensaje-sin-equipos");
@@ -1379,6 +1381,12 @@ btnAddZona.addEventListener("click", () => {
 btnAddEquipo.addEventListener("click", () => {
   añadirEquipo(inputNuevoEquipo.value);
   inputNuevoEquipo.value = "";
+});
+
+// Evento para el botón del modal de equipos
+btnAddEquipoModal.addEventListener("click", () => {
+  añadirEquipo(inputNuevoEquipoModal.value);
+  inputNuevoEquipoModal.value = "";
 });
 
 // ---------------------- Modo Zona Fija (Multiusuario) ----------------------
