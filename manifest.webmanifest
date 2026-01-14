@@ -1,0 +1,24 @@
+{
+  "name": "Unión de Pescadores de Plasencia - Clasificación",
+  "short_name": "UPP Pesca",
+  "description": "Panel de clasificación de concursos de pesca - Unión de Pescadores de Plasencia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#021b2d",
+  "theme_color": "#44c4a1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

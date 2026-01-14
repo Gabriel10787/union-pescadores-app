@@ -1,0 +1,14 @@
+<!-- Placeholder SVG para icon-192.png -->
+<!-- Por favor, crea una imagen PNG de 192x192px con el logo de tu aplicación -->
+<!-- y guárdala como icon-192.png -->
+
+<!-- Para crear iconos rápidamente puedes usar:
+1. https://favicon.io/favicon-generator/
+2. Canva
+3. Cualquier editor de imágenes
+
+Recomendación de diseño:
+- Fondo: #021b2d (color de tu app)
+- Icono: 🎣 emoji o logo de pesca
+- Texto: "UPP" o "UPP Pesca"
+-->

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎣 Clasificación Pesca - UPP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="Aplicación de gestión de concursos de pesca - Unión de Pescadores de Plasencia" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.jpg" />
+  <link rel="apple-touch-icon" href="logo.jpg" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  
+  <!-- Meta tags para PWA -->
+  <meta name="theme-color" content="#44c4a1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="UPP Pesca" />
+  
+  <!-- Google Fonts - Inter (fuente profesional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-wrapper">
+    <header class="app-header">
+      <button id="btn-theme-toggle" class="btn-theme-toggle" title="Cambiar tema">
+        🌙
+      </button>
+      <img src="logo.jpg" alt="Logo UPP" class="header-logo" />
+      <div class="title-group">
+        <h1>Unión de Pescadores de Plasencia</h1>
+        <p class="subtitle">Gestión de concursos</p>
+      </div>
+      <div class="header-buttons">
+        <button id="btn-menu" class="btn-menu-header">
+          ☰ Menú
+        </button>
+      </div>
+    </header>
+
+    <!-- Menú desplegable -->
+    <nav id="menu-desplegable" class="menu-desplegable" style="display: none;">
+      <div class="menu-overlay" id="menu-overlay"></div>
+      <div class="menu-content">
+        <div class="menu-header">
+          <h3>📋 Menú de Gestión</h3>
+          <button id="btn-cerrar-menu" class="btn-cerrar-menu">✕</button>
+        </div>
+        <ul class="menu-lista">
+          <li>
+            <button id="menu-ranking-individual" class="menu-item">
+              🏆 Ranking Individual
+            </button>
+          </li>
+          <li>
+            <button id="menu-exportar-individual" class="menu-item">
+              💾 Exportar Clasificación Individual
+            </button>
+          </li>
+          <li>
+            <button id="menu-imprimir-individual" class="menu-item">
+              🖨️ Imprimir Clasificación Individual
+            </button>
+          </li>
+          <li>
+            <button id="menu-ranking-equipos" class="menu-item">
+              🏅 Ranking Equipos Temporada
+            </button>
+          </li>
+          <li>
+            <button id="menu-exportar-equipos" class="menu-item">
+              💾 Exportar Clasificación Equipos
+            </button>
+          </li>
+          <li>
+            <button id="menu-imprimir-equipos" class="menu-item">
+              🖨️ Imprimir Clasificación Equipos
+            </button>
+          </li>
+          <li>
+            <button id="menu-gestionar-equipos" class="menu-item">
+              🤝 Gestionar Equipos
+            </button>
+          </li>
+          <li style="border-top: 2px solid var(--accent); margin-top: 8px; padding-top: 8px;">
+            <button id="menu-admin" class="menu-item menu-item-admin">
+              🔐 Modo Administrador
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Modal de login administrador -->
+    <div id="modal-admin" class="modal-admin" style="display: none;">
+      <div class="modal-overlay" id="modal-admin-overlay"></div>
+      <div class="modal-admin-content">
+        <div class="modal-admin-header">
+          <h3>🔐 Acceso Administrador</h3>
+          <button id="btn-cerrar-modal-admin" class="btn-cerrar-menu">✕</button>
+        </div>
+        <div class="modal-admin-body">
+          <p id="admin-status-text">Introduce la contraseña de administrador</p>
+          <input type="password" id="input-password-admin" placeholder="Contraseña" />
+          <button id="btn-login-admin" class="btn-primary">Acceder</button>
+          <button id="btn-recuperar-password" class="btn-secondary" style="margin-top: 8px; width: 100%;">
+            🔑 ¿Olvidaste tu contraseña?
+          </button>
+          <div id="admin-panel" style="display: none;">
+            <div class="admin-info">
+              <p>✅ <strong>Sesión de administrador activa</strong></p>
+              <button id="btn-logout-admin" class="btn-secondary">Cerrar sesión</button>
+            </div>
+            <div class="admin-actions">
+              <h4>Gestión de Concursos</h4>
+              
+              <!-- Formulario para crear concurso -->
+              <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                <h5 style="margin-bottom: 12px; font-size: 0.95rem;">➡️ Crear nuevo concurso</h5>
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label for="fecha-concurso">Fecha del concurso (DD/MM/AAAA) *</label>
+                  <input type="text" id="fecha-concurso" placeholder="14/01/2026" pattern="\d{2}/\d{2}/\d{4}" required style="width: 100%;" />
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label for="temporada">Temporada (año) *</label>
+                  <input type="number" id="temporada" min="2000" max="2100" style="width: 100%;" />
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label for="nombre-concurso">Nombre del concurso</label>
+                  <input type="text" id="nombre-concurso" placeholder="Ej: Concurso de Primavera" style="width: 100%;" />
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label for="lugar-concurso">Lugar</label>
+                  <input type="text" id="lugar-concurso" placeholder="Ej: Río Jértiga" style="width: 100%;" />
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label for="hora-concurso">Hora de inicio</label>
+                  <input type="time" id="hora-concurso" style="width: 100%;" />
+                </div>
+                <button id="btn-nuevo-concurso" class="btn-primary" style="width: 100%;">
+                  ✅ Añadir concurso
+                </button>
+              </div>
+              
+              <!-- Gestión de zonas del concurso -->
+              <div id="zonas-concurso-section" style="display: none; background: #fff3cd; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                <h5 style="margin-bottom: 12px; font-size: 0.95rem;">🗺️ Zonas del concurso activo</h5>
+                <div class="zonas-config" style="margin-bottom: 12px;">
+                  <input
+                    type="text"
+                    id="nueva-zona"
+                    placeholder="Nombre de nueva zona (p.ej. Zona D)"
+                    style="width: calc(100% - 110px); margin-right: 8px;"
+                  />
+                  <button id="btn-add-zona" class="btn-secondary" style="width: 100px;">➡️ Añadir</button>
+                </div>
+                <div class="zonas-lista">
+                  <label style="font-size: 0.85rem;">Zonas activas:</label>
+                  <ul id="lista-zonas" style="margin-top: 8px;">
+                    <!-- Se rellenará desde JS -->
+                  </ul>
+                  <small>Haz clic en una zona para eliminarla.</small>
+                </div>
+                <button id="btn-toggle-zonas-cerrar" class="btn-secondary" style="width: 100%; margin-top: 12px;">
+                  ✖ Cerrar gestión de zonas
+                </button>
+              </div>
+              
+              <button id="btn-toggle-zonas" class="btn-secondary" style="width: 100%; background: #f59e0b; border-color: #f59e0b; opacity: 0.5; cursor: not-allowed; margin-bottom: 16px;" disabled>
+                🗺️ Gestionar zonas del concurso
+              </button>
+              
+              <!-- Lista de concursos existentes -->
+              <div id="lista-concursos-admin"></div>
+            </div>
+            <div class="admin-actions">
+              <h4>Gestión de Equipos</h4>
+              <div id="lista-equipos-admin"></div>
+            </div>
+            <div class="admin-actions">
+              <h4>🎯 Modo Zona (Multiusuario)</h4>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">Activa una zona fija para trabajar más rápido sin cambiar de zona en cada pesaje.</p>
+              <div class="zona-mode-config">
+                <div class="form-group">
+                  <label for="zona-fija-select">Seleccionar zona fija</label>
+                  <select id="zona-fija-select">
+                    <option value="">Sin zona fija (manual)</option>
+                  </select>
+                </div>
+                <button id="btn-activar-zona-fija" class="btn-secondary" style="width: 100%; margin-bottom: 8px;">
+                  ✅ Activar modo zona
+                </button>
+                <button id="btn-desactivar-zona-fija" class="btn-danger" style="width: 100%; display: none;">
+                  ❌ Desactivar modo zona
+                </button>
+              </div>
+              <div id="zona-fija-info" class="zona-fija-activa" style="display: none; margin-top: 12px; padding: 12px; background: var(--accent); color: white; border-radius: 6px;">
+                <p style="margin: 0;"><strong>🟢 Modo Zona Activo:</strong> <span id="zona-fija-nombre"></span></p>
+                <small style="display: block; margin-top: 4px;">Todos los pesajes se registrarán automáticamente en esta zona.</small>
+              </div>
+            </div>
+            <div class="admin-actions">
+              <h4>Seguridad</h4>
+              <button id="btn-cambiar-password" class="btn-secondary" style="width: 100%; margin-bottom: 12px;">
+                🔐 Cambiar contraseña
+              </button>
+            </div>
+            <div class="admin-actions">
+              <h4>Histórico</h4>
+              <button id="menu-borrar-historico" class="btn-danger" style="width: 100%;">
+                🗑️ Borrar Histórico
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de gestión de equipos -->
+    <div id="modal-equipos" class="modal-admin" style="display: none;">
+      <div class="modal-overlay" id="modal-equipos-overlay"></div>
+      <div class="modal-admin-content">
+        <div class="modal-admin-header">
+          <h3>🤝 Gestión de Equipos</h3>
+          <button id="btn-cerrar-modal-equipos" class="btn-cerrar-menu">✕</button>
+        </div>
+        <div class="modal-admin-body">
+          <div class="card-header" style="padding: 0; margin-bottom: 20px;">
+            <p>Los equipos se comparten para toda la temporada. Gestiona los equipos que participan.</p>
+          </div>
+
+          <div class="equipos-config">
+            <input
+              type="text"
+              id="nuevo-equipo"
+              placeholder="Nombre del equipo (p.ej. Los Barbos)"
+            />
+            <button id="btn-add-equipo" class="btn-secondary">➡️ Añadir equipo</button>
+          </div>
+
+          <div class="equipos-lista">
+            <label>Equipos activos en esta temporada:</label>
+            <ul id="lista-equipos">
+              <!-- Se rellenará desde JS -->
+            </ul>
+            <small>Los equipos se pueden eliminar desde el panel de administrador.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de gestión de equipos -->
+    <div id="modal-equipos" class="modal-admin" style="display: none;">
+      <div class="modal-overlay" id="modal-equipos-overlay"></div>
+      <div class="modal-admin-content">
+        <div class="modal-admin-header">
+          <h3>🤝 Gestión de Equipos</h3>
+          <button id="btn-cerrar-modal-equipos" class="btn-cerrar-menu">✕</button>
+        </div>
+        <div class="modal-admin-body">
+          <div class="card-header" style="padding: 0; margin-bottom: 20px;">
+            <p>Los equipos se comparten para toda la temporada. Gestiona los equipos que participan.</p>
+          </div>
+
+          <div class="equipos-config">
+            <input
+              type="text"
+              id="nuevo-equipo"
+              placeholder="Nombre del equipo (p.ej. Los Barbos)"
+            />
+            <button id="btn-add-equipo" class="btn-secondary">➜ Añadir equipo</button>
+          </div>
+
+          <div class="equipos-lista">
+            <label>Equipos activos en esta temporada:</label>
+            <ul id="lista-equipos">
+              <!-- Se rellenará desde JS -->
+            </ul>
+            <small>Los equipos se pueden eliminar desde el panel de administrador.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <!-- Zona superior: selección de concurso -->
+      <section class="card card-main">
+        <div class="card-header">
+          <h2>🎯 Elige concurso</h2>
+          <p>Selecciona el concurso de pesca.</p>
+        </div>
+
+        <div class="concursos-filtros">
+          <div class="form-group">
+            <label for="select-concurso">Concurso activo</label>
+            <select id="select-concurso"></select>
+          </div>
+        </div>
+
+        <!-- Información del concurso activo -->
+        <div id="info-concurso-activo" style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white; display: none;">
+          <h3 style="margin-bottom: 16px; font-size: 1.2rem;">🎯 <span id="info-nombre">-</span></h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+            <div>
+              <strong>📅 Fecha:</strong><br>
+              <span id="info-fecha">-</span>
+            </div>
+            <div>
+              <strong>🏆 Temporada:</strong><br>
+              <span id="info-temporada">-</span>
+            </div>
+            <div>
+              <strong>📍 Lugar:</strong><br>
+              <span id="info-lugar">-</span>
+            </div>
+            <div>
+              <strong>⏰ Hora:</strong><br>
+              <span id="info-hora">-</span>
+            </div>
+            <div>
+              <strong>🗺️ Zonas:</strong><br>
+              <div id="info-zonas" style="margin-top: 4px;">-</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Formulario para añadir pesaje -->
+      <section class="card">
+        <div class="card-header">
+          <h2>⚖️ Añadir pesaje</h2>
+          <p>Registra los datos del concursante en el concurso activo.</p>
+        </div>
+
+        <form id="form-pesaje">
+          <input type="hidden" id="registro-id-edicion" value="" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="puesto">Puesto</label>
+              <input
+                type="number"
+                id="puesto"
+                name="puesto"
+                required
+                min="1"
+                placeholder="Nº de puesto"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="nombre">Nombre</label>
+              <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                required
+                placeholder="Nombre"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="apellido1">Primer apellido</label>
+              <input
+                type="text"
+                id="apellido1"
+                name="apellido1"
+                required
+                placeholder="Primer apellido"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="apellido2">Segundo apellido (opcional)</label>
+              <input
+                type="text"
+                id="apellido2"
+                name="apellido2"
+                placeholder="Segundo apellido"
+              />
+            </div>
+
+            <div class="form-group" id="campo-zona-container">
+              <label for="zona">Zona</label>
+              <select id="zona" name="zona" required>
+                <option value="">Selecciona zona</option>
+                <!-- Opciones generadas dinámicamente -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="equipo">🤝 Equipo (opcional)</label>
+              <select id="equipo" name="equipo">
+                <option value="">Sin equipo</option>
+                <!-- Opciones generadas dinámicamente -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="peso">Peso total (gramos)</label>
+              <input
+                type="number"
+                id="peso"
+                name="peso"
+                required
+                min="0"
+                step="1"
+                placeholder="Peso en gramos"
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="btn-guardar-pesaje" class="btn-primary full-width">
+              💾 Guardar pesaje
+            </button>
+            <button type="button" id="btn-cancelar-edicion" class="btn-secondary full-width" style="display: none;">
+              ❌ Cancelar edición
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Filtros -->
+      <section class="card">
+        <div class="card-header">
+          <h2>🔍 Filtros</h2>
+          <p>Ajusta la vista de clasificación individual.</p>
+        </div>
+
+        <div class="filters">
+          <div class="form-group">
+            <label for="filtro-zona">Ver por zona</label>
+            <select id="filtro-zona">
+              <option value="todas">Todas las zonas</option>
+              <!-- Opciones generadas dinámicamente -->
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Clasificación individual del concurso activo -->
+      <section class="card">
+        <div class="card-header">
+          <h2>🏆 Clasificación individual</h2>
+          <p>Tabla clasificatoria del concurso y zona seleccionada.</p>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="tabla-clasificacion">
+            <thead>
+              <tr>
+                <th>Posición Final</th>
+                <th>Puesto</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Zona</th>
+                <th>Equipo</th>
+                <th>Peso (g)</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Filas generadas por JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="acciones">
+          <button id="btn-exportar" class="btn-secondary">
+            📤 Exportar clasificación a Excel
+          </button>
+          <button id="btn-imprimir-concurso" class="btn-secondary">
+            🖨️ Imprimir clasificación
+          </button>
+        </div>
+
+        <p class="resumen">
+          🎖️ Concursante con más peso en la vista actual:
+          <span id="top-concursante">Sin datos</span>
+        </p>
+      </section>
+
+      <!-- Clasificación por equipos del concurso activo -->
+      <section class="card card-equipos">
+        <div class="card-header">
+          <h2>🤝 Clasificación por equipos</h2>
+          <p>Ranking de equipos del concurso actual (suma de pesos de todos los miembros).</p>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="tabla-clasificacion-equipos">
+            <thead>
+              <tr>
+                <th>Posición</th>
+                <th>Equipo</th>
+                <th>Peso total (g)</th>
+                <th>Nº Miembros</th>
+                <th>Promedio (g)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Filas generadas por JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="mensaje-sin-equipos" class="no-data" style="display: none;">
+          🤝 No hay equipos registrados en este concurso
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <small>🎣 Derechos de autor GGL - Unión de Pescadores de Plasencia</small>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

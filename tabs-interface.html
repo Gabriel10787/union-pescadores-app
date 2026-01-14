@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interfaz de Pestañas Apiladas</title>
+  <link rel="stylesheet" href="tabs-styles.css">
+</head>
+<body>
+  <div class="browser-container">
+    <!-- Barra de pestañas -->
+    <div class="tabs-bar">
+      <div class="tabs-container" id="tabs-container">
+        <!-- Las pestañas se generarán dinámicamente -->
+      </div>
+      <button class="new-tab-btn" id="new-tab-btn" title="Nueva pestaña">
+        <svg viewBox="0 0 24 24" width="16" height="16">
+          <path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Área de contenido -->
+    <div class="content-area" id="content-area">
+      <!-- El contenido de cada pestaña se mostrará aquí -->
+    </div>
+  </div>
+
+  <script src="tabs-script.js"></script>
+</body>
+</html>
