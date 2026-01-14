@@ -1163,7 +1163,7 @@ function editarRegistro(idRegistro) {
     return; // Usuario canceló
   }
   
-  if (passwordIngresada !== ADMIN_PASSWORD) {
+  if (passwordIngresada !== obtenerPasswordActual()) {
     alert("❌ Contraseña incorrecta. No se puede editar el registro.");
     return;
   }
@@ -1212,7 +1212,7 @@ function eliminarRegistro(idRegistro) {
     return; // Usuario canceló
   }
   
-  if (passwordIngresada !== ADMIN_PASSWORD) {
+  if (passwordIngresada !== obtenerPasswordActual()) {
     alert("❌ Contraseña incorrecta. No se puede eliminar el registro.");
     return;
   }
