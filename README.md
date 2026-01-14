@@ -136,7 +136,7 @@
 - `styles.css` - Estilos responsive
 - `ranking.html` - Página de ranking
 - `ranking.js` - Lógica del ranking
-- `logo.png` - Logo de la asociación
+- `logo.jpg` - Logo de la asociación
 
 ### PWA:
 - `manifest.webmanifest` - Configuración PWA

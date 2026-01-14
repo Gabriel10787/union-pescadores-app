@@ -1058,6 +1058,74 @@ filtroZona.addEventListener("change", () => {
   pintarTabla();
 });
 
+// ---------------------- Función auxiliar para ordenar clasificación ----------------------
+
+/**
+ * Ordena registros según el nuevo criterio de clasificación:
+ * 
+ * EJEMPLO CON ZONAS:
+ * Si hay Zona A, B, C con participantes:
+ *   - Zona A: Juan (500g), Pedro (400g), Ana (300g)
+ *   - Zona B: María (550g), Carlos (450g), Luis (250g)
+ *   - Zona C: Sofia (480g), Diego (420g), Laura (350g)
+ * 
+ * Orden final:
+ *   1º María (550g) - 1º de Zona B
+ *   2º Sofia (480g) - 1º de Zona C
+ *   3º Juan (500g) - 1º de Zona A
+ *   4º Carlos (450g) - 2º de Zona B
+ *   5º Diego (420g) - 2º de Zona C
+ *   6º Pedro (400g) - 2º de Zona A
+ *   7º Laura (350g) - 3º de Zona C
+ *   8º Ana (300g) - 3º de Zona A
+ *   9º Luis (250g) - 3º de Zona B
+ * 
+ * REGLAS:
+ * - Si hay zonas y se muestran todas: primero todos los 1º puestos de cada zona 
+ *   (ordenados por peso), luego todos los 2º, luego todos los 3º, etc.
+ * - Si no hay zonas o se filtra una zona específica: ordenar solo por peso descendente.
+ * 
+ * @param {Array} registros - Array de registros de pesajes
+ * @param {Array} zonas - Array de nombres de zonas del concurso
+ * @param {String} zonaSeleccionada - Zona seleccionada en filtro ("todas" o nombre de zona)
+ * @returns {Array} - Array ordenado según el criterio
+ */
+function ordenarClasificacion(registros, zonas, zonaSeleccionada) {
+  const registrosFiltrados = registros.slice();
+  const tieneZonas = zonas && zonas.length > 0;
+  
+  if (tieneZonas && zonaSeleccionada === "todas") {
+    // Calcular posición dentro de cada zona
+    const registrosPorZona = {};
+    
+    // Agrupar por zona
+    zonas.forEach(zona => {
+      registrosPorZona[zona] = registros
+        .filter(r => r.zona === zona)
+        .sort((a, b) => b.peso - a.peso); // Ordenar por peso dentro de zona
+    });
+    
+    // Asignar posición en zona a cada registro
+    registrosFiltrados.forEach(reg => {
+      const posEnZona = registrosPorZona[reg.zona]?.findIndex(r => r === reg) + 1 || 999;
+      reg.posicionEnZona = posEnZona;
+    });
+    
+    // Ordenar: primero por posición en zona, luego por peso (descendente)
+    registrosFiltrados.sort((a, b) => {
+      if (a.posicionEnZona !== b.posicionEnZona) {
+        return a.posicionEnZona - b.posicionEnZona; // Ascendente por posición
+      }
+      return b.peso - a.peso; // Descendente por peso si misma posición
+    });
+  } else {
+    // Sin zonas o con filtro de zona específica: ordenar solo por peso
+    registrosFiltrados.sort((a, b) => b.peso - a.peso);
+  }
+  
+  return registrosFiltrados;
+}
+
 // Pintar tabla para el concurso activo (y filtro de zona)
 function pintarTabla() {
   const concurso = obtenerConcursoActivo();
@@ -1077,8 +1145,12 @@ function pintarTabla() {
     );
   }
 
-  // Ordenar por peso descendente
-  registrosFiltrados.sort((a, b) => b.peso - a.peso);
+  // Aplicar nueva clasificación
+  registrosFiltrados = ordenarClasificacion(
+    registrosFiltrados, 
+    concurso.zonas, 
+    zonaSeleccionada
+  );
 
   registrosFiltrados.forEach((reg, index) => {
     const tr = document.createElement("tr");
@@ -1456,7 +1528,12 @@ if (btnImprimirConcurso) {
       );
     }
 
-    registrosFiltrados.sort((a, b) => b.peso - a.peso);
+    // Aplicar nueva clasificación
+    registrosFiltrados = ordenarClasificacion(
+      registrosFiltrados, 
+      concurso.zonas, 
+      zonaSeleccionada
+    );
 
     const contenidoHTML = `
       <!DOCTYPE html>
@@ -1723,7 +1800,12 @@ menuImprimirIndividual.addEventListener("click", () => {
     );
   }
 
-  registrosFiltrados.sort((a, b) => b.peso - a.peso);
+  // Aplicar nueva clasificación
+  registrosFiltrados = ordenarClasificacion(
+    registrosFiltrados, 
+    concurso.zonas, 
+    zonaSeleccionada
+  );
 
   const contenidoHTML = `
     <!DOCTYPE html>

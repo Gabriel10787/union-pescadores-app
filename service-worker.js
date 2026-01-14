@@ -20,8 +20,7 @@ const urlsToCache = [
 
 // Archivos opcionales (no bloquean la instalación si fallan)
 const urlsOpcionales = [
-  '/README.md',
-  '/logo.svg'
+  '/README.md'
 ];
 
 // Evento de instalación: cachear todos los archivos necesarios
